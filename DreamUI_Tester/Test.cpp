@@ -115,6 +115,12 @@ void TestGameEnd(const Event*)
 	CleanupTestGameUI();
 }
 
+void TestGameChat(const Event* evt) {
+	LocalChatEventData* data = evt->data<LocalChatEventData>();
+	const char* text = data->content;
+	OutputScreen(10.0f, "TEST CHAT MESSAGE:%s", text);
+}
+
 
 int WINAPI DllMain(HINSTANCE hDLL, int reason, LPVOID reserved)
 {
@@ -123,6 +129,7 @@ int WINAPI DllMain(HINSTANCE hDLL, int reason, LPVOID reserved)
 		InitDreamUI(GetModuleHandle("Game.dll"), GetModuleHandle("Storm.dll"), 6401);
 		MainDispatcher()->listen(EVENT_GAME_START, TestGameStart);
 		MainDispatcher()->listen(EVENT_GAME_END, TestGameEnd);
+		MainDispatcher()->listen(EVENT_LOCAL_CHAT, TestGameChat);
 	}
 	else if (reason == DLL_PROCESS_DETACH)
 	{
