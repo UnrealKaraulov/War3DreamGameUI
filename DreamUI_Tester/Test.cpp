@@ -18,9 +18,13 @@
 
 #include <Button.h>
 #include <Input.h>
-
+#include <EditBoxButton.h>
 
 Button* TestButton1 = NULL;
+
+std::string TestEditBoxString;
+
+EditBoxButton* TestEditBox;
 
 
 void TestButtonChangeState(Button* btn)
@@ -40,8 +44,18 @@ void TestButtonChangeState(Button* btn)
 	TestButton1->setAbsolutePosition(UILayoutFrame::POSITION_BOTTOM_RIGHT,
 		newposx, newposy);
 
+
+	TestEditBox->setRelativePosition(
+		UILayoutFrame::POSITION_TOP_LEFT,
+		TestButton1->_backdrop,
+		UILayoutFrame::POSITION_TOP_LEFT,
+		-(TestEditBox->getFrame()->width() + 0.002), 0.0f);
 }
 
+void EditBoxCallback(Button* button)
+{
+	OutputScreen(15.0f, "Called EditBoxCallback");
+}
 
 void TestGameUI()
 {
@@ -63,13 +77,28 @@ void TestGameUI()
 		0.48f, 0.35f);
 
 	TestButton1->_backdrop->show();
-	//TestButton1->posToolTip(-0.05f,-0.04f);
+
+
+	TestEditBox = new EditBoxButton(
+		TestButton1->_backdrop,
+		0.05f, 0.03f,
+		&TestEditBoxString,
+		"TEST ME", EditBoxCallback);
+
+
+	TestEditBox->setRelativePosition(
+		UILayoutFrame::POSITION_TOP_LEFT,
+		TestButton1->_backdrop,
+		UILayoutFrame::POSITION_TOP_LEFT,
+		-(TestEditBox->getFrame()->width() + 0.002), 0.0f);
+
 }
 
 void CleanupTestGameUI()
 {
 	// NO NEED CLEANUP WITH 'DELETE', BECAUSE BUTTONS.CPP DO CLEAN ALL BUTTONS AFTER GAME END
 	TestButton1 = NULL;
+	TestEditBox = NULL;
 }
 
 void TestGameStart(const Event*)

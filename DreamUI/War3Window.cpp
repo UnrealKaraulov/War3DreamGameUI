@@ -10,6 +10,7 @@
 #include "Version.h"
 #include "IUIObject.h"
 #include "Timer.h"
+#include "EditBoxButton.h"
 
 constexpr unsigned int MAX_WNDPROC = 32;
 static unsigned int WndProcCount = 0;
@@ -58,13 +59,24 @@ bool InitedHook = false;
 
 HHOOK hhookSysMsg;
 
-LRESULT CALLBACK DreamUI_WarWindow3Proc(int nCode, WPARAM wParam, LPARAM lParam)
+UINT lastmsg = 0;
+WPARAM lastwparam = 0;
+LPARAM lastlparam = 0;
+
+LRESULT CALLBACK DreamUI_WarWindow3Proc(int nCode, WPARAM wwParam, LPARAM llParam)
 {
 	if (nCode < HC_ACTION)
-		return CallNextHookEx(hhookSysMsg, nCode, wParam, lParam);
-	if (lParam > 0)
+		return CallNextHookEx(hhookSysMsg, nCode, wwParam, llParam);
+	if (llParam > 0)
 	{
-		LPMSG lmsg = (LPMSG)lParam;
+		LPMSG lmsg = (LPMSG)llParam;
+
+		if (lmsg->wParam == lastwparam && lmsg->lParam == lastlparam && lmsg->message == lastmsg)
+			return CallNextHookEx(hhookSysMsg, nCode, wwParam, llParam);
+
+		lastmsg = lmsg->message;
+		lastwparam = lmsg->wParam;
+		lastlparam = lmsg->lParam;
 
 		if (!InitedHook) {
 			InitedHook = true;
@@ -74,17 +86,67 @@ LRESULT CALLBACK DreamUI_WarWindow3Proc(int nCode, WPARAM wParam, LPARAM lParam)
 		if (lmsg->message == WM_SIZE)
 		{
 			// (x / y) / (4 / 3 ) = (640 / 480) / ( 4 / 3) = 
-			WidthRatioX = ((float)LOWORD(lParam) / (float)HIWORD(lParam)) / (4.f / 3.f);
+			WidthRatioX = ((float)LOWORD(lmsg->lParam) / (float)HIWORD(lmsg->lParam)) / (4.f / 3.f);
 			// (y / x) / (3 / 4 ) = (480 / 640) / ( 3 / 4) = 
-			WidthRatioY = ((float)HIWORD(lParam) / (float)LOWORD(lParam)) / (3.f / 4.f);
+			WidthRatioY = ((float)HIWORD(lmsg->lParam) / (float)LOWORD(lmsg->lParam)) / (3.f / 4.f);
 
 			GetTimer(0.05, RefreshUICallback)->start();
 		}
 
 
+
+
+		if (lmsg->message == WM_LBUTTONDOWN || lmsg->message == WM_RBUTTONDOWN ||
+			lmsg->message == WM_MBUTTONDOWN || lmsg->message == WM_LBUTTONUP || lmsg->message == WM_RBUTTONUP
+			|| lmsg->message == WM_MBUTTONUP)
+		{
+			EditBoxButton::StopInput(); 
+		}
+
+
+		if (EditBoxButton::IsAnyEditBoxActive())
+		{
+			if (lmsg->message == WM_KEYDOWN || lmsg->message == WM_SYSKEYDOWN)
+			{
+				if (lmsg->wParam == VK_BACK)
+				{
+					EditBoxButton::RemoveCharacterFromCurrentEditBox(false);
+				}
+				else if (lmsg->wParam == VK_DELETE)
+				{
+					EditBoxButton::RemoveCharacterFromCurrentEditBox(true);
+				}
+				else if (lmsg->wParam == VK_LEFT)
+				{
+					EditBoxButton::CurrentEditBoxMoveCursorLeft();
+				}
+				else if (lmsg->wParam == VK_RIGHT)
+				{
+					EditBoxButton::CurrentEditBoxMoveCursorRight();
+				}
+				else
+				{
+					unsigned char _keystate[256];
+					WCHAR  _inputbuf[32]{ 0 };
+					GetKeyboardState(_keystate);
+					if (!(MapVirtualKey(lmsg->wParam, MAPVK_VK_TO_CHAR) >> (sizeof(unsigned int) * 8 - 1) & 1))
+					{
+						if (ToUnicode(lmsg->wParam, MapVirtualKey(lmsg->wParam, 0),
+							_keystate, _inputbuf, 32, 0) >= 1)
+						{
+							EditBoxButton::EnterTextToCurrentEditBox(_inputbuf);
+						}
+					}
+
+				}
+				return 0;
+			}
+		}
+
+
 		CallWndProcs(lmsg->hwnd, lmsg->message, lmsg->wParam, lmsg->lParam);
 	}
-	return CallNextHookEx(hhookSysMsg, nCode, wParam, lParam);
+	return CallNextHookEx(hhookSysMsg, nCode, wwParam, llParam);
 }
 
 void War3Window_Init(HINSTANCE hGameDll) {

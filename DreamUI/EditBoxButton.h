@@ -19,8 +19,13 @@ public:
 
 	EditBoxButton() : _pVarText(NULL), _enteringText(false) , _offset(0){}
 
-	EditBoxButton(UISimpleFrame* parent, float width, float height, std::string* text, std::string defaulttext,
+	EditBoxButton(UISimpleFrame* parent,
+		float					width,
+		float					height,
+		std::string* text,
+		std::string 			defaulttext,
 		ButtonCallback			callback = NULL,
+		bool					dontStore = false,
 		bool					noSurface = false);
 
 	~EditBoxButton();

@@ -54,8 +54,8 @@ EditBoxButton::EditBoxButton(
 	std::string* text,
 	std::string 			defaulttext,
 	ButtonCallback			callback,
+	bool					dontStore,
 	bool					noSurface
-
 ) : Button(parent, width, height, UISimpleButton::MOUSEBUTTON_LEFT, UISimpleButton::STATE_ENABLED, CallbackEditBoxButton, NULL, true, true),
 _enteringText(false), _pVarText(text),
 editBoxButtonCallback(callback)
@@ -99,7 +99,7 @@ editBoxButtonCallback(callback)
 	setTimer(-1);
 
 	//setTextAlign( TextAlignmentHorizontal::ALIGN_HORIZ_LEFT, TextAlignmentVertical::ALIGN_VERT_CENTER );
-
+	if (!dontStore)
 	EditBoxButtonSet.insert(this);
 }
 
@@ -162,6 +162,10 @@ void EditBoxButton::Init()
 }
 void EditBoxButton::Cleanup()
 {
+	for (std::set<EditBoxButton*>::iterator iter = EditBoxButtonSet.begin();
+		iter != EditBoxButtonSet.end(); ++iter) {
+		delete (*iter);
+	}
 	EditBoxButtonSet.clear();
 }
 
