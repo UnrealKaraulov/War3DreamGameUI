@@ -4,6 +4,9 @@
 
 #include "GameStructs.h"
 
+extern double wc3_max_x;
+extern double wc3_max_y;
+
 struct MousePosition {
 	float x;
 	float y;

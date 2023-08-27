@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ToolTip.h"
 #include "Button.h"
-
+#include "Input.h"
 #include "IUIObject.h"//TODO
 
 static std::set<ToolTip*> ToolTipSet;
@@ -10,6 +10,9 @@ static const unsigned int TOOLTIP_MAX_SIZE = 0x800;
 static char ToolTipStrBuffer[TOOLTIP_MAX_SIZE];
 
 ToolTip::ToolTip() : _frame(), _text() {}
+
+static const float TEXT_MARGIN_X = 0.001f;;
+static const float TEXT_MARGIN_Y = 0.001f;
 
 ToolTip* ToolTip::Create(
 	UISimpleFrame* parent,
@@ -29,7 +32,7 @@ ToolTip* ToolTip::Create(
 	sf->setPadding(0.002f);
 	sf->applyTextureSettings();
 	//sf->setAbsolutePosition( UILayoutFrame::POSITION_BOTTOM_LEFT, 0.3f, 0.3f );
-	sf->setRelativePosition(POS_BL, parent, POS_BL, parent->baseLayoutFrame()->width + 0.01f, 0.0f);
+	sf->setRelativePosition(UISimpleFrame::POSITION_TOP_LEFT, parent, UISimpleFrame::POSITION_TOP_LEFT, width + 0.02f, 0.0f);
 	/*sf->setRelativePosition(
 		UISimpleFrame::POSITION_LEFT,
 		parent,
@@ -44,9 +47,11 @@ ToolTip* ToolTip::Create(
 	UISimpleFontString* sfs = UISimpleFontString::Create(tooltip->_frame);
 	sprintf_s(ToolTipStrBuffer, TOOLTIP_MAX_SIZE, "%s", formattedContent);//TODO½âÎö?
 	sfs->initFont(UIObject::GetPathByName("InfoPanelTextFont"), 0.013f, 0);//?
-	sfs->setRelativePosition(POS_UL, tooltip->_frame, POS_L, 0.01f, 0);
+	sfs->setRelativePosition(UISimpleFrame::POSITION_TOP_LEFT, tooltip->_frame, UISimpleFrame::POSITION_TOP_LEFT, 0.001f, 0.001f);
 	sfs->setText(ToolTipStrBuffer);
-
+	
+	sf->setWidth(sfs->getTextWidth() + (2 * TEXT_MARGIN_X));
+	sf->setHeight(sfs->getTextHeight() + (2 * TEXT_MARGIN_Y));
 
 	//	sf->setWidth( sfs->getTextWidth( ) );
 
@@ -54,11 +59,6 @@ ToolTip* ToolTip::Create(
 	tooltip->_text = sfs;
 
 	if (!dontStore) ToolTipSet.insert(tooltip);
-
-	tooltip->applyPosition();
-
-	//sf->setWidth( sfs->getTextWidth( ) );
-	//sf->setHeight( sfs->getTextHeight( ) );
 
 	tooltip->applyPosition();
 
@@ -73,11 +73,45 @@ void ToolTip::Destroy(ToolTip* tooltip) {
 }
 
 void ToolTip::bindButton(Button* button) {
+
+	float centerx = button->getFrame()->getCenterX();
+	float centery = button->getFrame()->getCenterY();
+
+	float widthoffset = button->getFrame()->width() * 0.5f;
+	float heightoffset = button->getFrame()->height() * 0.5f;
+
+	float tooltipwidth = _frame->width();
+	float tooltipheight = _frame->height();
+
+	float offsetx = 0.0f;
+	float offsety = 0.0f;
+
+	if (centerx + widthoffset + tooltipwidth + 0.01f > wc3_max_x)
+	{
+		offsetx = -tooltipwidth;
+	}
+	else
+	{
+		offsetx = widthoffset * 2.0f;
+	}
+
+	if ((centery - heightoffset * 2.0f) - tooltipheight < 0.01f)
+	{
+		offsety = tooltipheight;
+	}
+	else
+	{
+		offsety = 0.0f;
+	}
+
+	bindButton(button, offsetx, offsety);
+}
+void ToolTip::bindButton(Button* button, float offsetx, float offsety) {
 	_frame->setRelativePosition(
 		UISimpleFrame::POSITION_TOP_LEFT,
 		button->getFrame(),
-		UISimpleFrame::POSITION_CENTER,
-		0, 0
+		UISimpleFrame::POSITION_TOP_LEFT,
+		offsetx, offsety
 	);
 	applyPosition();
 }

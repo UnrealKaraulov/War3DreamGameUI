@@ -40,10 +40,11 @@ public:
 	void			setAbsolutePosition(UISimpleButton::Position originPos, float x, float y);
 	void			setRelativePosition(unsigned int originPos, UILayoutFrame* target, unsigned int toPos, float relativeX, float relativeY);
 	void			setText(const char* text);
-	void			setText(const std::string & text);
+	void			setText(const std::string& text);
 	void Bold(bool flag);
 	const char* getText() const;
 	void			applyPosition();
+	void posToolTip(float relativex, float relativey);
 
 	void SetControlCoverNormal(const char* backgroundpath, const char* borderpath, float borderwidth, float padding);
 	void SetControlCoverPushed(const char* backgroundpath, const char* borderpath, float borderwidth, float padding);

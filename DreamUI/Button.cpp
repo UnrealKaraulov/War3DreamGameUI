@@ -290,7 +290,7 @@ controlCoverNormal(), controlCoverPushed(), controlCoverDisabled(), eventObserve
 			tooltip,
 			true
 		);
-		//tp->bindButton( button );
+		tp->bindButton( button );
 		tp->hide();
 		button->_tooltip = tp;
 	}
@@ -302,6 +302,14 @@ controlCoverNormal(), controlCoverPushed(), controlCoverDisabled(), eventObserve
 
 	if (!dontStore) ButtonSet.insert(button);
 	ButtonSetAll.insert(button);
+}
+
+void Button::posToolTip(float relativex, float relativey)
+{
+	if (_tooltip)
+	{
+		_tooltip->bindButton(this, relativex, relativey);
+	}
 }
 
 Button::~Button() {
@@ -327,7 +335,10 @@ void Button::applyPosition() {//FIXME ËÆºõÃ»ÓÃ
 	if (_control)
 		_control->applyPosition();
 	if (_tooltip)
-		_tooltip->applyPosition();
+	{
+		_tooltip->bindButton(this);
+		//_tooltip->applyPosition();
+	}
 }
 void Button::setAbsolutePosition(UISimpleButton::Position originPos, float x, float y) {
 	_backdrop->setAbsolutePosition(originPos, x, y);
@@ -373,7 +384,7 @@ void Button::showToolTip() {
 
 	if (_tooltip)
 	{
-		_tooltip->applyPosition();
+		_tooltip->bindButton(this);
 		_tooltip->show();
 	}
 }

@@ -18,6 +18,7 @@ public:
 	static void Destroy(ToolTip* tooltip);
 
 	void bindButton(Button* button);
+	void bindButton(Button* button, float relativex, float relativey);
 	void applyPosition();
 
 	void show();

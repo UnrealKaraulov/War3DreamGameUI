@@ -17,6 +17,7 @@
 #include <Tools.h>
 
 #include <Button.h>
+#include <Input.h>
 
 
 Button* TestButton1 = NULL;
@@ -25,6 +26,20 @@ Button* TestButton1 = NULL;
 void TestButtonChangeState(Button* btn)
 {
 	OutputScreen(15.0f, "Press TestButton1");
+
+	float newposx = (rand() % (int)(wc3_max_x * 100)) / 100.0f;
+
+	if (newposx + TestButton1->getFrame()->width() + 0.01 > wc3_max_x)
+		newposx -= TestButton1->getFrame()->width();
+
+	float newposy = (rand() % (int)(wc3_max_y * 100)) / 100.0f;
+
+	if (newposy + TestButton1->getFrame()->height() + 0.01 > wc3_max_y)
+		newposy -= TestButton1->getFrame()->height();
+
+	TestButton1->setAbsolutePosition(UILayoutFrame::POSITION_BOTTOM_RIGHT,
+		newposx, newposy);
+
 }
 
 
@@ -36,17 +51,19 @@ void TestGameUI()
 		UISimpleButton::MOUSEBUTTON_LEFT,
 		UISimpleButton::STATE_ENABLED,
 		&TestButtonChangeState,
-		NULL,
+		"TestButton1 ToolTip |nTestButton1 ToolTip|nTestButton1 ToolTip|nTestButton1 ToolTip",
+		/*  Set to false to cleanup it after game end */
 		false,
 		false,
 		0.011f
 	);
 
-	TestButton1->setText("Show dota config");
+	TestButton1->setText("TestButton1");
 	TestButton1->setAbsolutePosition(UILayoutFrame::POSITION_BOTTOM_RIGHT,
-		0.79f, 0.155f);
+		0.48f, 0.35f);
 
 	TestButton1->_backdrop->show();
+	//TestButton1->posToolTip(-0.05f,-0.04f);
 }
 
 void CleanupTestGameUI()
