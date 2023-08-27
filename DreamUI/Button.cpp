@@ -306,10 +306,12 @@ controlCoverNormal(), controlCoverPushed(), controlCoverDisabled(), eventObserve
 
 Button::~Button() {
 	boundData.clear();
-	ToolTip::Destroy(this->_tooltip);
+	if (this->_tooltip)
+		ToolTip::Destroy(this->_tooltip);
 	//UISimpleFontString::Destroy(this->_displayText);
 	//UISimpleFontString::Destroy(this->_displayTextShadow);
-	delete _caption;
+	if (_caption)
+		delete _caption;
 	UISimpleFrame::Destroy(this->controlCoverNormal);
 	UISimpleFrame::Destroy(this->controlCoverPushed);
 	UISimpleFrame::Destroy(this->controlCoverDisabled);
@@ -320,9 +322,12 @@ Button::~Button() {
 }
 
 void Button::applyPosition() {//FIXME ËÆºõÃ»ÓÃ
-	_backdrop->applyPosition();
-	_control->applyPosition();
-	_tooltip->applyPosition();
+	if (_backdrop)
+		_backdrop->applyPosition();
+	if (_control)
+		_control->applyPosition();
+	if (_tooltip)
+		_tooltip->applyPosition();
 }
 void Button::setAbsolutePosition(UISimpleButton::Position originPos, float x, float y) {
 	_backdrop->setAbsolutePosition(originPos, x, y);
@@ -339,7 +344,7 @@ void Button::setText(const char* text) {
 	_caption->setText("%s", text);
 	_org_text = text;
 }
-void Button::setText(const std::string & text) {
+void Button::setText(const std::string& text) {
 	_caption->setText("%s", text.c_str());
 	_org_text = text;
 }
@@ -359,13 +364,13 @@ const char* Button::getText() const
 
 
 void Button::push() {
-	
+
 	if (this->_isDisabled) return;
 	if (_controlCallback) _controlCallback(this);
 }
 
 void Button::showToolTip() {
-	
+
 	if (_tooltip)
 	{
 		_tooltip->applyPosition();
@@ -374,7 +379,7 @@ void Button::showToolTip() {
 }
 
 void Button::hideToolTip() {
-	
+
 	if (_tooltip)
 	{
 		_tooltip->hide();
