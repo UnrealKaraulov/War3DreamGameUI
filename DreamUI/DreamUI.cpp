@@ -50,6 +50,8 @@ void InitDreamUI(void* _GameDll, void * _StormDll, unsigned long version) {
 
 				Input_Init();
 
+				//Hook_Init(); Net Packet Handler
+
 				IsInitedDreamUI = true;
 			}
 		}

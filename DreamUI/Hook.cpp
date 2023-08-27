@@ -31,6 +31,8 @@ void DetourPacketAnalyze(war3::PacketSender* packetSender) {
 	}
 	else {
 		//;//OutputDebug("[%u]Packet Id = 0x%X", TimeRaw(), *(uint8_t*)(packetSender->packet));
+		// 
+		//Packet.cpp Disabled!
 		//PacketAnalyze(packetSender);
 	}
 }
