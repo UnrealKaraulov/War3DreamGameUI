@@ -16,3 +16,8 @@
 *.ifc
 *.pdb
 *.lastcodeanalysissucceeded
+*.db-shm
+.vs/War3DreamUI/v17/.suo
+*.db-wal
+*.db-wal
+*.opendb
