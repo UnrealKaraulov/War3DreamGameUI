@@ -118,6 +118,7 @@ namespace war3 {
 		SimpleTopButtonListArray* pButtonListArray;			//0x8AC
 		uint8_t unk_8B0[0x4];
 		unsigned int						buttonListArrayCount;		//0x8B4
+		uint8_t unk_8B8[0x44];
 	};
 
 	struct SimpleFrame_DC_Element {

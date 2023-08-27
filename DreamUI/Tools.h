@@ -208,4 +208,47 @@ war3::ItemDataNode* GetItemDataNode(unsigned int type_id);
 
 const char* GetJassReturedString(unsigned int id);
 
+
+
+extern void* GameGlobalUI;
+extern void* GameProfileInt;
+extern void* GameProfileFloat;
+extern void* GameUnitArrayGet;
+extern war3::CGameWar3** GameGlobalObject;
+extern void* GameStateGet;
+extern void* GameObjectFromHash;
+extern void* GameHandleFromObject;
+extern void* GameTimeGet;
+extern void* GameUnitGetObject;
+extern void* GameItemGetObject;
+extern void* GameAbilityFromUnit;
+extern void* GameUIToggle;
+extern void* GameUnitSelectionPrioGet;
+extern void* GameSoundPlay;
+extern void* DefaultUnitTagGet;
+extern war3::MapInfo* GameMapInfo;
+extern war3::CGxDevice** CGxDevice;
+extern void* GlobalGlueMgr;
+extern void* InputObserverGetCall;
+extern void* PlayerNameGetCall;
+extern void* ObjectNameGetCall;
+extern void* GetIcon;
+extern void* GetIconObj;
+//extern void *AbilitySpellCheck;
+extern void* AgentTimerVTable;
+extern void* PlayerTechtreeGet;
+extern void** AgileData;
+extern void** CCommandButtonVtable;
+extern void* AbilityDefDataGetByAID;
+extern void* AbilityUIDefGetByAID;
+extern void* SelectionSubgroupSetFunc;
+extern void* SelectionSyncFunc;
+extern void* NativeFuncGet;
+extern void* NativeFuncCreate;
+extern void* JassStringRvToRCString;
+extern void* UnitDataHashTable;
+extern void* UnitDataNodeGet;
+extern void* ItemDataHashTable;
+extern void* ItemDataNodeGet;
+
 #endif
